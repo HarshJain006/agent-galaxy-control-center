@@ -1,6 +1,6 @@
 
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Text3D, Float } from '@react-three/drei';
+import { OrbitControls, Float } from '@react-three/drei';
 import { useRef } from 'react';
 import * as THREE from 'three';
 
@@ -9,8 +9,13 @@ function Robot() {
   
   useFrame((state) => {
     if (robotRef.current) {
-      robotRef.current.rotation.y = Math.sin(state.clock.elapsedTime) * 0.2;
-      robotRef.current.position.y = Math.sin(state.clock.elapsedTime * 2) * 0.1;
+      // More realistic swaying motion
+      robotRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.8) * 0.15;
+      robotRef.current.position.y = Math.sin(state.clock.elapsedTime * 1.5) * 0.08;
+      
+      // Slight tilting for more natural movement
+      robotRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.6) * 0.05;
+      robotRef.current.rotation.z = Math.cos(state.clock.elapsedTime * 0.7) * 0.03;
     }
   });
 
@@ -19,57 +24,87 @@ function Robot() {
       {/* Robot Head */}
       <mesh position={[0, 1, 0]}>
         <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color="#4f46e5" metalness={0.8} roughness={0.2} />
+        <meshStandardMaterial color="#000000" metalness={0.9} roughness={0.1} />
       </mesh>
       
       {/* Robot Eyes */}
       <mesh position={[-0.2, 1.1, 0.5]}>
         <sphereGeometry args={[0.1, 16, 16]} />
-        <meshStandardMaterial color="#00ff88" emissive="#00ff88" emissiveIntensity={0.5} />
+        <meshStandardMaterial color="#FFD700" emissive="#FFD700" emissiveIntensity={0.8} />
       </mesh>
       <mesh position={[0.2, 1.1, 0.5]}>
         <sphereGeometry args={[0.1, 16, 16]} />
-        <meshStandardMaterial color="#00ff88" emissive="#00ff88" emissiveIntensity={0.5} />
+        <meshStandardMaterial color="#FFD700" emissive="#FFD700" emissiveIntensity={0.8} />
       </mesh>
       
       {/* Robot Body */}
       <mesh position={[0, 0, 0]}>
         <boxGeometry args={[1.2, 1.5, 0.8]} />
-        <meshStandardMaterial color="#6366f1" metalness={0.8} roughness={0.2} />
+        <meshStandardMaterial color="#1A1A1A" metalness={0.8} roughness={0.2} />
       </mesh>
       
       {/* Robot Arms */}
       <mesh position={[-0.8, 0.2, 0]}>
         <cylinderGeometry args={[0.15, 0.15, 1, 8]} />
-        <meshStandardMaterial color="#8b5cf6" metalness={0.8} roughness={0.2} />
+        <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
       </mesh>
       <mesh position={[0.8, 0.2, 0]}>
         <cylinderGeometry args={[0.15, 0.15, 1, 8]} />
-        <meshStandardMaterial color="#8b5cf6" metalness={0.8} roughness={0.2} />
+        <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
+      </mesh>
+      
+      {/* Robot Chest Detail */}
+      <mesh position={[0, 0.3, 0.41]}>
+        <boxGeometry args={[0.6, 0.6, 0.1]} />
+        <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
       </mesh>
     </group>
   );
 }
 
-function OrbitingAgent({ radius, speed, offset, color }: { radius: number; speed: number; offset: number; color: string }) {
+function OrbitingAgent({ radius, speed, offset, color, ringIndex }: { 
+  radius: number; 
+  speed: number; 
+  offset: number; 
+  color: string;
+  ringIndex: number;
+}) {
   const agentRef = useRef<THREE.Group>(null);
   
   useFrame((state) => {
     if (agentRef.current) {
       const time = state.clock.elapsedTime * speed + offset;
-      agentRef.current.position.x = Math.cos(time) * radius;
-      agentRef.current.position.z = Math.sin(time) * radius;
-      agentRef.current.position.y = Math.sin(time * 2) * 0.5;
-      agentRef.current.rotation.y = time;
+      
+      // More realistic orbital motion with slight elliptical orbits
+      const ellipticalX = radius * 1.1;
+      const ellipticalZ = radius * 0.9;
+      
+      agentRef.current.position.x = Math.cos(time) * ellipticalX;
+      agentRef.current.position.z = Math.sin(time) * ellipticalZ;
+      
+      // Varying vertical oscillation based on ring
+      const verticalFreq = 1.5 + ringIndex * 0.3;
+      agentRef.current.position.y = Math.sin(time * verticalFreq) * (0.8 - ringIndex * 0.1);
+      
+      // More natural rotation with wobble
+      agentRef.current.rotation.y = time + Math.sin(time * 2) * 0.2;
+      agentRef.current.rotation.x = Math.sin(time * 1.3) * 0.1;
+      agentRef.current.rotation.z = Math.cos(time * 0.8) * 0.1;
     }
   });
 
   return (
     <group ref={agentRef}>
-      <Float speed={2} rotationIntensity={1} floatIntensity={0.5}>
+      <Float speed={1.5 + Math.random() * 0.5} rotationIntensity={0.8} floatIntensity={0.3}>
         <mesh>
           <octahedronGeometry args={[0.3, 0]} />
-          <meshStandardMaterial color={color} metalness={0.9} roughness={0.1} emissive={color} emissiveIntensity={0.2} />
+          <meshStandardMaterial 
+            color={color} 
+            metalness={0.95} 
+            roughness={0.05} 
+            emissive={color} 
+            emissiveIntensity={0.3}
+          />
         </mesh>
       </Float>
     </group>
@@ -80,30 +115,43 @@ export function AnimatedRobotScene() {
   return (
     <div className="h-96 w-full">
       <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
-        <ambientLight intensity={0.4} />
-        <pointLight position={[10, 10, 10]} intensity={1} />
-        <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8b5cf6" />
+        <ambientLight intensity={0.3} />
+        <pointLight position={[10, 10, 10]} intensity={1.2} color="#FFD700" />
+        <pointLight position={[-10, -10, -10]} intensity={0.8} color="#FFD700" />
+        <pointLight position={[0, 15, 0]} intensity={0.6} color="#FFFFFF" />
         
         {/* Central Robot */}
         <Robot />
         
-        {/* Orbiting AI Agents - Inner Ring */}
-        <OrbitingAgent radius={3} speed={1} offset={0} color="#00ff88" />
-        <OrbitingAgent radius={3} speed={1} offset={Math.PI * 2 / 3} color="#ff6b6b" />
-        <OrbitingAgent radius={3} speed={1} offset={Math.PI * 4 / 3} color="#4ecdc4" />
+        {/* Orbiting AI Agents - Inner Ring (Golden Yellow variants) */}
+        <OrbitingAgent radius={3} speed={1.2} offset={0} color="#FFD700" ringIndex={0} />
+        <OrbitingAgent radius={3} speed={1.2} offset={Math.PI * 2 / 3} color="#FFA500" ringIndex={0} />
+        <OrbitingAgent radius={3} speed={1.2} offset={Math.PI * 4 / 3} color="#FFDF00" ringIndex={0} />
         
-        {/* Orbiting AI Agents - Outer Ring */}
-        <OrbitingAgent radius={4.5} speed={0.7} offset={Math.PI / 3} color="#ffd93d" />
-        <OrbitingAgent radius={4.5} speed={0.7} offset={Math.PI} color="#ff9ff3" />
-        <OrbitingAgent radius={4.5} speed={0.7} offset={Math.PI * 5 / 3} color="#54a0ff" />
+        {/* Orbiting AI Agents - Middle Ring (Black variants) */}
+        <OrbitingAgent radius={4.5} speed={0.8} offset={Math.PI / 3} color="#333333" ringIndex={1} />
+        <OrbitingAgent radius={4.5} speed={0.8} offset={Math.PI} color="#1A1A1A" ringIndex={1} />
+        <OrbitingAgent radius={4.5} speed={0.8} offset={Math.PI * 5 / 3} color="#000000" ringIndex={1} />
         
-        {/* Third Ring */}
-        <OrbitingAgent radius={6} speed={0.5} offset={0} color="#5f27cd" />
-        <OrbitingAgent radius={6} speed={0.5} offset={Math.PI / 2} color="#00d2d3" />
-        <OrbitingAgent radius={6} speed={0.5} offset={Math.PI} color="#ff9f43" />
-        <OrbitingAgent radius={6} speed={0.5} offset={Math.PI * 3 / 2} color="#ee5a24" />
+        {/* Orbiting AI Agents - Outer Ring (Mixed golden and black) */}
+        <OrbitingAgent radius={6} speed={0.6} offset={0} color="#B8860B" ringIndex={2} />
+        <OrbitingAgent radius={6} speed={0.6} offset={Math.PI / 2} color="#2C2C2C" ringIndex={2} />
+        <OrbitingAgent radius={6} speed={0.6} offset={Math.PI} color="#DAA520" ringIndex={2} />
+        <OrbitingAgent radius={6} speed={0.6} offset={Math.PI * 3 / 2} color="#0F0F0F" ringIndex={2} />
         
-        <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
+        {/* Extra outer ring for more depth */}
+        <OrbitingAgent radius={7.5} speed={0.4} offset={Math.PI / 4} color="#FFD700" ringIndex={3} />
+        <OrbitingAgent radius={7.5} speed={0.4} offset={Math.PI * 3 / 4} color="#1C1C1C" ringIndex={3} />
+        <OrbitingAgent radius={7.5} speed={0.4} offset={Math.PI * 5 / 4} color="#F4A460" ringIndex={3} />
+        
+        <OrbitControls 
+          enableZoom={false} 
+          enablePan={false} 
+          autoRotate 
+          autoRotateSpeed={0.3}
+          minPolarAngle={Math.PI / 3}
+          maxPolarAngle={Math.PI * 2 / 3}
+        />
       </Canvas>
     </div>
   );
