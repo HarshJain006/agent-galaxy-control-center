@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bell, Search, Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -10,12 +11,24 @@ interface HeaderProps {
 }
 
 export function Header({ toggleSidebar, sidebarCollapsed }: HeaderProps) {
+  const navigate = useNavigate();
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   return (
     <header className="h-16 bg-white border-b border-slate-200 shadow-sm flex items-center justify-between px-6">
       <div className="flex items-center space-x-4">
         <Button variant="ghost" size="sm" onClick={toggleSidebar} className="md:hidden">
           <Menu className="w-5 h-5" />
         </Button>
+        <h1 
+          className="text-xl font-bold text-slate-900 cursor-pointer hover:text-slate-700 transition-colors"
+          onClick={handleLogoClick}
+        >
+          AgentHub
+        </h1>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input
