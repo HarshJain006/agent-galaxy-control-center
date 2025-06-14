@@ -1,10 +1,10 @@
-
 import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { Dashboard as DashboardComponent } from "@/components/Dashboard";
 import { UsersManagement } from "@/components/UsersManagement";
 import { AgentsManagement } from "@/components/AgentsManagement";
+import { AgentDeployment } from "@/components/AgentDeployment";
 import { CompaniesManagement } from "@/components/CompaniesManagement";
 import { Settings } from "@/components/Settings";
 
@@ -20,6 +20,8 @@ const Dashboard = () => {
         return <UsersManagement />;
       case "agents":
         return <AgentsManagement />;
+      case "deployment":
+        return <AgentDeployment />;
       case "companies":
         return <CompaniesManagement />;
       case "settings":

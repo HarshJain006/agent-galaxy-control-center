@@ -1,4 +1,3 @@
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,7 +8,8 @@ import {
   Building2, 
   Settings, 
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Rocket
 } from "lucide-react";
 
 interface SidebarProps {
@@ -38,6 +38,12 @@ export function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed }: Si
       label: "AI Agents",
       icon: Bot,
       description: "Deploy and monitor agents"
+    },
+    {
+      id: "deployment",
+      label: "Agent Deployment",
+      icon: Rocket,
+      description: "Deploy n8n workflows"
     },
     {
       id: "companies",
