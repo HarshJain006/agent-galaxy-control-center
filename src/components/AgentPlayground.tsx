@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,7 +27,12 @@ import {
   BookOpen,
   Mic,
   Image,
-  Workflow
+  Workflow,
+  Plus,
+  X,
+  Edit,
+  Save,
+  Trash2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -49,6 +53,23 @@ interface AgentChain {
   progress: number;
 }
 
+interface PlaygroundAgent {
+  id: string;
+  agent: Agent;
+  task: string;
+  order: number;
+  status: "pending" | "running" | "completed" | "error";
+}
+
+interface PlaygroundWorkflow {
+  id: string;
+  name: string;
+  description: string;
+  agents: PlaygroundAgent[];
+  status: "draft" | "running" | "completed";
+  createdAt: Date;
+}
+
 export function AgentPlayground() {
   const { toast } = useToast();
   const [activeAgent, setActiveAgent] = useState<string | null>(null);
@@ -60,6 +81,14 @@ export function AgentPlayground() {
   const [debateTopics, setDebateTopics] = useState("");
   const [lifeGoal, setLifeGoal] = useState("");
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
+
+  // Common Playground State
+  const [playgroundAgents, setPlaygroundAgents] = useState<PlaygroundAgent[]>([]);
+  const [workflowName, setWorkflowName] = useState("");
+  const [workflowDescription, setWorkflowDescription] = useState("");
+  const [savedWorkflows, setSavedWorkflows] = useState<PlaygroundWorkflow[]>([]);
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [tempTask, setTempTask] = useState("");
 
   const agents: Agent[] = [
     {
@@ -152,6 +181,137 @@ export function AgentPlayground() {
     { id: "davinci", name: "Da Vinci", emoji: "🎨" },
     { id: "jobs", name: "Steve Jobs", emoji: "📱" }
   ];
+
+  // Common Playground Functions
+  const addAgentToPlayground = (agent: Agent) => {
+    const newPlaygroundAgent: PlaygroundAgent = {
+      id: `${agent.id}-${Date.now()}`,
+      agent,
+      task: `Perform ${agent.name} task`,
+      order: playgroundAgents.length + 1,
+      status: "pending"
+    };
+    setPlaygroundAgents([...playgroundAgents, newPlaygroundAgent]);
+    
+    toast({
+      title: "Agent Added! 🤖",
+      description: `${agent.name} added to playground`
+    });
+  };
+
+  const removeAgentFromPlayground = (id: string) => {
+    setPlaygroundAgents(playgroundAgents.filter(a => a.id !== id));
+  };
+
+  const updateAgentTask = (id: string, task: string) => {
+    setPlaygroundAgents(playgroundAgents.map(a => 
+      a.id === id ? { ...a, task } : a
+    ));
+  };
+
+  const moveAgent = (id: string, direction: "up" | "down") => {
+    const currentIndex = playgroundAgents.findIndex(a => a.id === id);
+    if (
+      (direction === "up" && currentIndex === 0) ||
+      (direction === "down" && currentIndex === playgroundAgents.length - 1)
+    ) return;
+
+    const newAgents = [...playgroundAgents];
+    const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+    
+    [newAgents[currentIndex], newAgents[targetIndex]] = [newAgents[targetIndex], newAgents[currentIndex]];
+    
+    // Update order numbers
+    newAgents.forEach((agent, index) => {
+      agent.order = index + 1;
+    });
+    
+    setPlaygroundAgents(newAgents);
+  };
+
+  const saveWorkflow = () => {
+    if (!workflowName || playgroundAgents.length === 0) {
+      toast({
+        title: "Missing Information",
+        description: "Please provide a workflow name and add at least one agent",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newWorkflow: PlaygroundWorkflow = {
+      id: Date.now().toString(),
+      name: workflowName,
+      description: workflowDescription,
+      agents: [...playgroundAgents],
+      status: "draft",
+      createdAt: new Date()
+    };
+
+    setSavedWorkflows([newWorkflow, ...savedWorkflows]);
+    setWorkflowName("");
+    setWorkflowDescription("");
+    
+    toast({
+      title: "Workflow Saved! 💾",
+      description: `"${newWorkflow.name}" saved successfully`
+    });
+  };
+
+  const runPlaygroundWorkflow = () => {
+    if (playgroundAgents.length === 0) {
+      toast({
+        title: "No Agents",
+        description: "Add agents to run the workflow",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Simulate running workflow
+    setPlaygroundAgents(playgroundAgents.map(a => ({ ...a, status: "running" })));
+    
+    toast({
+      title: "🚀 Workflow Started!",
+      description: `Running ${playgroundAgents.length} agents in sequence`
+    });
+
+    // Simulate completion
+    setTimeout(() => {
+      setPlaygroundAgents(playgroundAgents.map(a => ({ ...a, status: "completed" })));
+      toast({
+        title: "✅ Workflow Completed!",
+        description: "All agents have finished their tasks"
+      });
+    }, 3000);
+  };
+
+  const loadWorkflow = (workflow: PlaygroundWorkflow) => {
+    setPlaygroundAgents(workflow.agents.map(a => ({ ...a, status: "pending" })));
+    setWorkflowName(workflow.name);
+    setWorkflowDescription(workflow.description);
+    
+    toast({
+      title: "Workflow Loaded! 📂",
+      description: `"${workflow.name}" loaded into playground`
+    });
+  };
+
+  const startEditingTask = (id: string, currentTask: string) => {
+    setEditingTaskId(id);
+    setTempTask(currentTask);
+  };
+
+  const saveTask = (id: string) => {
+    updateAgentTask(id, tempTask);
+    setEditingTaskId(null);
+    setTempTask("");
+  };
+
+  const cancelEditingTask = () => {
+    setEditingTaskId(null);
+    setTempTask("");
+  };
 
   const handleDreamChainCreate = () => {
     if (!dreamChainGoal) {
@@ -307,6 +467,16 @@ export function AgentPlayground() {
     return colors[category] || "bg-gray-100 text-gray-800";
   };
 
+  const getStatusColor = (status: string) => {
+    const colors = {
+      pending: "bg-gray-100 text-gray-700",
+      running: "bg-blue-100 text-blue-700",
+      completed: "bg-green-100 text-green-700",
+      error: "bg-red-100 text-red-700"
+    };
+    return colors[status] || "bg-gray-100 text-gray-700";
+  };
+
   const tools = [
     { id: "airtable", name: "Airtable", icon: "📊" },
     { id: "openai", name: "OpenAI", icon: "🧠" },
@@ -328,13 +498,243 @@ export function AgentPlayground() {
         </p>
       </div>
 
-      <Tabs defaultValue="agents" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+      <Tabs defaultValue="playground" className="w-full">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="playground">🎯 Common Playground</TabsTrigger>
           <TabsTrigger value="agents">🤖 Agents</TabsTrigger>
           <TabsTrigger value="chains">🔗 Chains</TabsTrigger>
-          <TabsTrigger value="playground">🧪 Lab</TabsTrigger>
+          <TabsTrigger value="lab">🧪 Lab</TabsTrigger>
           <TabsTrigger value="results">📊 Results</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="playground" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Available Agents */}
+            <Card className="lg:col-span-1">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Plus className="w-5 h-5 mr-2 text-blue-600" />
+                  Available Agents
+                </CardTitle>
+                <CardDescription>
+                  Click to add agents to your workflow
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {agents.map((agent) => {
+                    const Icon = agent.icon;
+                    return (
+                      <div
+                        key={agent.id}
+                        className="flex items-center justify-between p-3 border rounded-lg hover:bg-slate-50 cursor-pointer"
+                        onClick={() => addAgentToPlayground(agent)}
+                      >
+                        <div className="flex items-center space-x-2">
+                          <Icon className="w-4 h-4 text-purple-600" />
+                          <div>
+                            <p className="text-sm font-medium">{agent.name}</p>
+                            <Badge size="sm" className={getCategoryColor(agent.category)}>
+                              {agent.category}
+                            </Badge>
+                          </div>
+                        </div>
+                        <Plus className="w-4 h-4 text-blue-600" />
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Workflow Builder */}
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Workflow className="w-5 h-5 mr-2 text-purple-600" />
+                  Workflow Builder
+                </CardTitle>
+                <CardDescription>
+                  Drag, drop, and customize your agent workflow
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Workflow Details */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="workflow-name">Workflow Name</Label>
+                    <Input
+                      id="workflow-name"
+                      placeholder="My Custom Workflow"
+                      value={workflowName}
+                      onChange={(e) => setWorkflowName(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="workflow-desc">Description (Optional)</Label>
+                    <Input
+                      id="workflow-desc"
+                      placeholder="What does this workflow do?"
+                      value={workflowDescription}
+                      onChange={(e) => setWorkflowDescription(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                {/* Agent Workflow */}
+                <div className="space-y-3">
+                  <Label>Agent Sequence ({playgroundAgents.length} agents)</Label>
+                  {playgroundAgents.length === 0 ? (
+                    <div className="text-center py-8 border-2 border-dashed border-slate-300 rounded-lg">
+                      <Workflow className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                      <p className="text-slate-500">Add agents from the left to build your workflow</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2 max-h-80 overflow-y-auto">
+                      {playgroundAgents.map((playgroundAgent, index) => {
+                        const Icon = playgroundAgent.agent.icon;
+                        return (
+                          <div key={playgroundAgent.id} className="flex items-center space-x-3 p-3 border rounded-lg bg-slate-50">
+                            <div className="flex items-center space-x-2 min-w-0 flex-1">
+                              <span className="text-sm font-bold text-slate-500">#{playgroundAgent.order}</span>
+                              <Icon className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-medium truncate">{playgroundAgent.agent.name}</p>
+                                {editingTaskId === playgroundAgent.id ? (
+                                  <div className="flex items-center space-x-2 mt-1">
+                                    <Input
+                                      value={tempTask}
+                                      onChange={(e) => setTempTask(e.target.value)}
+                                      className="text-xs h-6"
+                                      placeholder="Enter task..."
+                                    />
+                                    <Button
+                                      size="sm"
+                                      onClick={() => saveTask(playgroundAgent.id)}
+                                      className="h-6 px-2"
+                                    >
+                                      <Save className="w-3 h-3" />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={cancelEditingTask}
+                                      className="h-6 px-2"
+                                    >
+                                      <X className="w-3 h-3" />
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  <p 
+                                    className="text-xs text-slate-600 cursor-pointer hover:text-blue-600"
+                                    onClick={() => startEditingTask(playgroundAgent.id, playgroundAgent.task)}
+                                  >
+                                    {playgroundAgent.task}
+                                  </p>
+                                )}
+                              </div>
+                              <Badge className={getStatusColor(playgroundAgent.status)}>
+                                {playgroundAgent.status}
+                              </Badge>
+                            </div>
+                            <div className="flex items-center space-x-1">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => moveAgent(playgroundAgent.id, "up")}
+                                disabled={index === 0}
+                                className="h-6 w-6 p-0"
+                              >
+                                ↑
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => moveAgent(playgroundAgent.id, "down")}
+                                disabled={index === playgroundAgents.length - 1}
+                                className="h-6 w-6 p-0"
+                              >
+                                ↓
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => startEditingTask(playgroundAgent.id, playgroundAgent.task)}
+                                className="h-6 w-6 p-0"
+                              >
+                                <Edit className="w-3 h-3" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => removeAgentFromPlayground(playgroundAgent.id)}
+                                className="h-6 w-6 p-0 text-red-600 hover:text-red-700"
+                              >
+                                <X className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* Actions */}
+                <div className="flex space-x-2">
+                  <Button onClick={runPlaygroundWorkflow} className="flex-1">
+                    <Play className="w-4 h-4 mr-2" />
+                    Run Workflow
+                  </Button>
+                  <Button onClick={saveWorkflow} variant="outline">
+                    <Save className="w-4 h-4 mr-2" />
+                    Save
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Saved Workflows */}
+          {savedWorkflows.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Download className="w-5 h-5 mr-2 text-green-600" />
+                  Saved Workflows
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {savedWorkflows.map((workflow) => (
+                    <div key={workflow.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-medium">{workflow.name}</h4>
+                        <Badge variant="secondary">{workflow.agents.length} agents</Badge>
+                      </div>
+                      {workflow.description && (
+                        <p className="text-sm text-slate-600 mb-3">{workflow.description}</p>
+                      )}
+                      <div className="flex space-x-2">
+                        <Button size="sm" onClick={() => loadWorkflow(workflow)}>
+                          <Download className="w-3 h-3 mr-1" />
+                          Load
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => setSavedWorkflows(savedWorkflows.filter(w => w.id !== workflow.id))}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
 
         <TabsContent value="agents" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -375,7 +775,6 @@ export function AgentPlayground() {
         </TabsContent>
 
         <TabsContent value="chains" className="space-y-6">
-          {/* DreamChain Builder */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -440,7 +839,7 @@ export function AgentPlayground() {
           )}
         </TabsContent>
 
-        <TabsContent value="playground" className="space-y-6">
+        <TabsContent value="lab" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* PDF Chat */}
             <Card>
