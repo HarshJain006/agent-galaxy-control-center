@@ -1,6 +1,6 @@
 
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Float } from '@react-three/drei';
+import { OrbitControls, Float, Trail } from '@react-three/drei';
 import { useRef } from 'react';
 import * as THREE from 'three';
 
@@ -95,18 +95,25 @@ function OrbitingAgent({ radius, speed, offset, color, ringIndex }: {
 
   return (
     <group ref={agentRef}>
-      <Float speed={1.5 + Math.random() * 0.5} rotationIntensity={0.8} floatIntensity={0.3}>
-        <mesh>
-          <octahedronGeometry args={[0.3, 0]} />
-          <meshStandardMaterial 
-            color={color} 
-            metalness={0.95} 
-            roughness={0.05} 
-            emissive={color} 
-            emissiveIntensity={0.3}
-          />
-        </mesh>
-      </Float>
+      <Trail
+        width={0.8 + ringIndex * 0.2}
+        length={12 + ringIndex * 4}
+        color={color}
+        attenuation={(t) => t * t}
+      >
+        <Float speed={1.5 + Math.random() * 0.5} rotationIntensity={0.8} floatIntensity={0.3}>
+          <mesh>
+            <octahedronGeometry args={[0.3, 0]} />
+            <meshStandardMaterial 
+              color={color} 
+              metalness={0.95} 
+              roughness={0.05} 
+              emissive={color} 
+              emissiveIntensity={0.3}
+            />
+          </mesh>
+        </Float>
+      </Trail>
     </group>
   );
 }
