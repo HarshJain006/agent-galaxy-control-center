@@ -44,9 +44,10 @@ export function AgentChains({ chains, dreamChainGoal, setDreamChainGoal, setChai
 
     // Simulate progress
     setTimeout(() => {
-      setChains(prev => prev.map(chain => 
+      const updatedChains = chains.map(chain => 
         chain.id === newChain.id ? { ...chain, progress: 30 } : chain
-      ));
+      );
+      setChains([newChain, ...updatedChains]);
     }, 2000);
   };
 
