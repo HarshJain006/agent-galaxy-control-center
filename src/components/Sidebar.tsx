@@ -1,7 +1,16 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Users, Bot, Building2, LayoutDashboard, Settings, ChevronLeft, ChevronRight } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { 
+  LayoutDashboard, 
+  Users, 
+  Bot, 
+  Building2, 
+  Settings, 
+  ChevronLeft,
+  ChevronRight
+} from "lucide-react";
 
 interface SidebarProps {
   activeTab: string;
@@ -10,71 +19,107 @@ interface SidebarProps {
   setCollapsed: (collapsed: boolean) => void;
 }
 
-const menuItems = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "users", label: "Users", icon: Users },
-  { id: "agents", label: "AI Agents", icon: Bot },
-  { id: "companies", label: "Companies", icon: Building2 },
-  { id: "settings", label: "Settings", icon: Settings },
-];
-
 export function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed }: SidebarProps) {
+  const menuItems = [
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      icon: LayoutDashboard,
+      description: "Overview and analytics"
+    },
+    {
+      id: "users",
+      label: "Users",
+      icon: Users,
+      description: "Manage user accounts"
+    },
+    {
+      id: "agents",
+      label: "AI Agents",
+      icon: Bot,
+      description: "Deploy and monitor agents"
+    },
+    {
+      id: "companies",
+      label: "Companies",
+      icon: Building2,
+      description: "Manage organizations"
+    },
+    {
+      id: "settings",
+      label: "Settings",
+      icon: Settings,
+      description: "System configuration"
+    }
+  ];
+
   return (
     <div className={cn(
-      "fixed left-0 top-0 h-full bg-white border-r border-slate-200 shadow-lg transition-all duration-300 z-50",
+      "fixed left-0 top-0 z-40 h-full bg-white border-r border-slate-200 shadow-sm transition-all duration-300",
       collapsed ? "w-16" : "w-64"
     )}>
-      <div className="flex flex-col h-full">
-        <div className="p-4 border-b border-slate-200">
-          <div className="flex items-center justify-between">
-            {!collapsed && (
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <Bot className="w-5 h-5 text-white" />
-                </div>
-                <span className="font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  AgentHub
-                </span>
-              </div>
+      <div className="flex h-full flex-col">
+        {/* Header */}
+        <div className="flex h-16 items-center justify-between px-4 border-b border-slate-200">
+          {!collapsed && (
+            <h2 className="text-lg font-semibold text-slate-900">AgentHub</h2>
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setCollapsed(!collapsed)}
+            className="h-8 w-8 p-0"
+          >
+            {collapsed ? (
+              <ChevronRight className="h-4 w-4" />
+            ) : (
+              <ChevronLeft className="h-4 w-4" />
             )}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setCollapsed(!collapsed)}
-              className="p-1 hover:bg-slate-100"
-            >
-              {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-            </Button>
-          </div>
+          </Button>
         </div>
 
-        <nav className="flex-1 p-4">
-          <ul className="space-y-2">
-            {menuItems.map((item) => (
-              <li key={item.id}>
+        {/* Navigation */}
+        <ScrollArea className="flex-1 px-3 py-4">
+          <nav className="space-y-2">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
+              
+              return (
                 <Button
-                  variant={activeTab === item.id ? "default" : "ghost"}
+                  key={item.id}
+                  variant={isActive ? "default" : "ghost"}
                   className={cn(
-                    "w-full justify-start transition-all duration-200",
-                    collapsed ? "px-2" : "px-4",
-                    activeTab === item.id 
-                      ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md" 
-                      : "hover:bg-slate-100 text-slate-700"
+                    "w-full justify-start",
+                    collapsed ? "px-2" : "px-3",
+                    isActive && "bg-blue-600 hover:bg-blue-700 text-white"
                   )}
                   onClick={() => setActiveTab(item.id)}
+                  title={collapsed ? item.label : undefined}
                 >
-                  <item.icon className={cn("w-5 h-5", collapsed ? "mx-auto" : "mr-3")} />
-                  {!collapsed && <span>{item.label}</span>}
+                  <Icon className={cn("h-4 w-4", !collapsed && "mr-3")} />
+                  {!collapsed && (
+                    <div className="flex flex-col items-start">
+                      <span className="text-sm font-medium">{item.label}</span>
+                      {!isActive && (
+                        <span className="text-xs text-slate-500">{item.description}</span>
+                      )}
+                    </div>
+                  )}
                 </Button>
-              </li>
-            ))}
-          </ul>
-        </nav>
+              );
+            })}
+          </nav>
+        </ScrollArea>
 
-        <div className="p-4 border-t border-slate-200">
-          <div className={cn("text-xs text-slate-500", collapsed ? "text-center" : "")}>
-            {collapsed ? "v1.0" : "AgentHub v1.0.0"}
-          </div>
+        {/* Footer */}
+        <div className="border-t border-slate-200 p-4">
+          {!collapsed && (
+            <div className="text-xs text-slate-500 text-center">
+              <p>AgentHub v2.1.0</p>
+              <p>© 2024 All rights reserved</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

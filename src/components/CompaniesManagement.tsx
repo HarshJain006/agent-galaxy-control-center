@@ -4,36 +4,130 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Plus, Search, Filter, MoreHorizontal, Users, Bot } from "lucide-react";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
+import { Building2, Search, Plus, Edit, Trash2, Users, Bot, Globe, Mail, Phone } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+interface Company {
+  id: string;
+  name: string;
+  industry: string;
+  website: string;
+  email: string;
+  phone: string;
+  status: "active" | "inactive" | "trial" | "suspended";
+  employees: number;
+  agents: number;
+  joinDate: string;
+  subscription: string;
+  location: string;
+}
 
 export function CompaniesManagement() {
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
+  const [companies] = useState<Company[]>([
+    {
+      id: "1",
+      name: "TechCorp",
+      industry: "Technology",
+      website: "https://techcorp.com",
+      email: "admin@techcorp.com",
+      phone: "+1 234 567 8900",
+      status: "active",
+      employees: 150,
+      agents: 12,
+      joinDate: "2024-01-15",
+      subscription: "Enterprise",
+      location: "San Francisco, CA"
+    },
+    {
+      id: "2",
+      name: "InnovateLab",
+      industry: "Research & Development",
+      website: "https://innovatelab.com",
+      email: "contact@innovatelab.com",
+      phone: "+1 234 567 8901",
+      status: "active",
+      employees: 85,
+      agents: 8,
+      joinDate: "2024-02-20",
+      subscription: "Professional",
+      location: "Austin, TX"
+    },
+    {
+      id: "3",
+      name: "StartupXYZ",
+      industry: "Fintech",
+      website: "https://startupxyz.com",
+      email: "hello@startupxyz.com",
+      phone: "+1 234 567 8902",
+      status: "trial",
+      employees: 25,
+      agents: 3,
+      joinDate: "2024-03-10",
+      subscription: "Trial",
+      location: "New York, NY"
+    },
+    {
+      id: "4",
+      name: "DataFlow Inc",
+      industry: "Data Analytics",
+      website: "https://dataflow.com",
+      email: "support@dataflow.com",
+      phone: "+1 234 567 8903",
+      status: "suspended",
+      employees: 200,
+      agents: 15,
+      joinDate: "2024-01-05",
+      subscription: "Enterprise",
+      location: "Seattle, WA"
+    }
+  ]);
 
-  const companies = [
-    { id: 1, name: "TechCorp", industry: "Technology", users: 45, agents: 12, status: "Active", plan: "Enterprise", joined: "Jan 2024" },
-    { id: 2, name: "AnalyticsPro", industry: "Data Analytics", users: 23, agents: 8, status: "Active", plan: "Professional", joined: "Feb 2024" },
-    { id: 3, name: "SalesForce", industry: "Sales", users: 67, agents: 15, status: "Active", plan: "Enterprise", joined: "Dec 2023" },
-    { id: 4, name: "MediaHub", industry: "Media", users: 12, agents: 4, status: "Trial", plan: "Trial", joined: "Mar 2024" },
-    { id: 5, name: "SecureTech", industry: "Security", users: 34, agents: 9, status: "Suspended", plan: "Professional", joined: "Nov 2023" },
-  ];
-
-  const filteredCompanies = companies.filter(company => 
+  const filteredCompanies = companies.filter(company =>
     company.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    company.industry.toLowerCase().includes(searchTerm.toLowerCase())
+    company.industry.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    company.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleAddCompany = () => {
+    toast({
+      title: "Add Company",
+      description: "Company registration form would open here",
+    });
+  };
+
+  const handleEditCompany = (companyId: string) => {
+    toast({
+      title: "Edit Company",
+      description: `Edit form for company ${companyId} would open here`,
+    });
+  };
+
+  const handleDeleteCompany = (companyId: string) => {
+    toast({
+      title: "Delete Company",
+      description: `Confirmation dialog for deleting company ${companyId} would appear here`,
+      variant: "destructive",
+    });
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Active": return "default";
-      case "Trial": return "secondary";
-      case "Suspended": return "destructive";
-      default: return "outline";
+      case "active": return "bg-green-100 text-green-800";
+      case "inactive": return "bg-gray-100 text-gray-800";
+      case "trial": return "bg-blue-100 text-blue-800";
+      case "suspended": return "bg-red-100 text-red-800";
+      default: return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getSubscriptionColor = (subscription: string) => {
+    switch (subscription) {
+      case "Enterprise": return "bg-purple-100 text-purple-800";
+      case "Professional": return "bg-blue-100 text-blue-800";
+      case "Trial": return "bg-yellow-100 text-yellow-800";
+      default: return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -41,158 +135,125 @@ export function CompaniesManagement() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Companies Management</h1>
-          <p className="text-slate-600 mt-2">Manage companies and their AI agent subscriptions</p>
+          <h1 className="text-3xl font-bold text-slate-900 flex items-center">
+            <Building2 className="w-8 h-8 mr-3 text-purple-600" />
+            Companies Management
+          </h1>
+          <p className="text-slate-600 mt-2">Manage company accounts and organizational settings</p>
         </div>
-        <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+        <Button onClick={handleAddCompany} className="bg-purple-600 hover:bg-purple-700">
           <Plus className="w-4 h-4 mr-2" />
           Add Company
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-600">Total Companies</p>
-                <p className="text-2xl font-bold text-slate-900">{companies.length}</p>
-              </div>
-              <Building2 className="w-8 h-8 text-blue-600" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-600">Active</p>
-                <p className="text-2xl font-bold text-green-600">{companies.filter(c => c.status === "Active").length}</p>
-              </div>
-              <Building2 className="w-8 h-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-600">On Trial</p>
-                <p className="text-2xl font-bold text-orange-600">{companies.filter(c => c.status === "Trial").length}</p>
-              </div>
-              <Building2 className="w-8 h-8 text-orange-600" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-600">Total Users</p>
-                <p className="text-2xl font-bold text-purple-600">{companies.reduce((sum, c) => sum + c.users, 0)}</p>
-              </div>
-              <Users className="w-8 h-8 text-purple-600" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
       <Card>
         <CardHeader>
-          <div className="flex justify-between items-center">
-            <div>
-              <CardTitle className="flex items-center">
-                <Building2 className="w-5 h-5 mr-2" />
-                All Companies
-              </CardTitle>
-              <CardDescription>Manage company accounts and subscriptions</CardDescription>
-            </div>
-            <div className="flex space-x-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <Input
-                  placeholder="Search companies..."
-                  className="pl-10 w-64"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <Button variant="outline">
-                <Filter className="w-4 h-4 mr-2" />
-                Filter
-              </Button>
-            </div>
-          </div>
+          <CardTitle>Search Companies</CardTitle>
+          <CardDescription>Find companies by name, industry, or location</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left py-3 px-4 font-medium text-slate-600">Company</th>
-                  <th className="text-left py-3 px-4 font-medium text-slate-600">Industry</th>
-                  <th className="text-left py-3 px-4 font-medium text-slate-600">Users</th>
-                  <th className="text-left py-3 px-4 font-medium text-slate-600">Agents</th>
-                  <th className="text-left py-3 px-4 font-medium text-slate-600">Status</th>
-                  <th className="text-left py-3 px-4 font-medium text-slate-600">Plan</th>
-                  <th className="text-left py-3 px-4 font-medium text-slate-600">Joined</th>
-                  <th className="text-left py-3 px-4 font-medium text-slate-600">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredCompanies.map((company) => (
-                  <tr key={company.id} className="border-b border-slate-100 hover:bg-slate-50">
-                    <td className="py-4 px-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                          <Building2 className="w-4 h-4 text-white" />
-                        </div>
-                        <span className="font-medium text-slate-900">{company.name}</span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4 text-slate-900">{company.industry}</td>
-                    <td className="py-4 px-4">
-                      <div className="flex items-center space-x-1">
-                        <Users className="w-4 h-4 text-slate-400" />
-                        <span className="text-slate-900">{company.users}</span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div className="flex items-center space-x-1">
-                        <Bot className="w-4 h-4 text-slate-400" />
-                        <span className="text-slate-900">{company.agents}</span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4">
-                      <Badge variant={getStatusColor(company.status)}>
-                        {company.status}
-                      </Badge>
-                    </td>
-                    <td className="py-4 px-4">
-                      <Badge variant="outline">{company.plan}</Badge>
-                    </td>
-                    <td className="py-4 px-4 text-slate-600">{company.joined}</td>
-                    <td className="py-4 px-4">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreHorizontal className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>View Details</DropdownMenuItem>
-                          <DropdownMenuItem>Edit Company</DropdownMenuItem>
-                          <DropdownMenuItem>Manage Subscription</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input
+              placeholder="Search companies..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
           </div>
         </CardContent>
       </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {filteredCompanies.map((company) => (
+          <Card key={company.id} className="hover:shadow-lg transition-shadow">
+            <CardHeader className="pb-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle className="text-lg flex items-center">
+                    <Building2 className="w-5 h-5 mr-2 text-purple-600" />
+                    {company.name}
+                  </CardTitle>
+                  <CardDescription className="text-sm">{company.industry}</CardDescription>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Badge className={getStatusColor(company.status)}>
+                    {company.status}
+                  </Badge>
+                  <Badge className={getSubscriptionColor(company.subscription)}>
+                    {company.subscription}
+                  </Badge>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center text-sm text-slate-600">
+                  <Users className="w-4 h-4 mr-2" />
+                  <span>{company.employees} employees</span>
+                </div>
+                <div className="flex items-center text-sm text-slate-600">
+                  <Bot className="w-4 h-4 mr-2" />
+                  <span>{company.agents} agents</span>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center text-sm text-slate-600">
+                  <Globe className="w-4 h-4 mr-2" />
+                  <a href={company.website} target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">
+                    {company.website}
+                  </a>
+                </div>
+                <div className="flex items-center text-sm text-slate-600">
+                  <Mail className="w-4 h-4 mr-2" />
+                  {company.email}
+                </div>
+                <div className="flex items-center text-sm text-slate-600">
+                  <Phone className="w-4 h-4 mr-2" />
+                  {company.phone}
+                </div>
+              </div>
+
+              <div className="text-sm text-slate-600">
+                <div><strong>Location:</strong> {company.location}</div>
+                <div><strong>Joined:</strong> {new Date(company.joinDate).toLocaleDateString()}</div>
+              </div>
+
+              <div className="flex space-x-2 pt-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleEditCompany(company.id)}
+                  className="flex-1"
+                >
+                  <Edit className="w-3 h-3 mr-1" />
+                  Edit
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleDeleteCompany(company.id)}
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {filteredCompanies.length === 0 && (
+        <Card>
+          <CardContent className="text-center py-12">
+            <Building2 className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-slate-900 mb-2">No companies found</h3>
+            <p className="text-slate-600">Try adjusting your search criteria or add a new company.</p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
