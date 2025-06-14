@@ -1,3 +1,4 @@
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,7 +10,8 @@ import {
   Settings, 
   ChevronLeft,
   ChevronRight,
-  Rocket
+  Rocket,
+  Sparkles
 } from "lucide-react";
 
 interface SidebarProps {
@@ -26,6 +28,12 @@ export function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed }: Si
       label: "Dashboard",
       icon: LayoutDashboard,
       description: "Overview and analytics"
+    },
+    {
+      id: "playground",
+      label: "Agent Playground",
+      icon: Sparkles,
+      description: "Mix, chain & create AI agents"
     },
     {
       id: "users",
@@ -98,7 +106,8 @@ export function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed }: Si
                   className={cn(
                     "w-full justify-start",
                     collapsed ? "px-2" : "px-3",
-                    isActive && "bg-blue-600 hover:bg-blue-700 text-white"
+                    isActive && "bg-blue-600 hover:bg-blue-700 text-white",
+                    item.id === "playground" && !isActive && "bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100"
                   )}
                   onClick={() => setActiveTab(item.id)}
                   title={collapsed ? item.label : undefined}

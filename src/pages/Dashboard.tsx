@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
@@ -5,6 +6,7 @@ import { Dashboard as DashboardComponent } from "@/components/Dashboard";
 import { UsersManagement } from "@/components/UsersManagement";
 import { AgentsManagement } from "@/components/AgentsManagement";
 import { AgentDeployment } from "@/components/AgentDeployment";
+import { AgentPlayground } from "@/components/AgentPlayground";
 import { CompaniesManagement } from "@/components/CompaniesManagement";
 import { Settings } from "@/components/Settings";
 
@@ -16,6 +18,8 @@ const Dashboard = () => {
     switch (activeTab) {
       case "dashboard":
         return <DashboardComponent />;
+      case "playground":
+        return <AgentPlayground />;
       case "users":
         return <UsersManagement />;
       case "agents":
