@@ -96,13 +96,27 @@ export function useAgentPlayground() {
       return;
     }
 
+    // Determine execution flow based on agents
+    const hasParallelAgents = playgroundAgents.some(agent => agent.executionType === "parallel");
+    const hasSequentialAgents = playgroundAgents.some(agent => agent.executionType === "sequential");
+    
+    let executionFlow: "sequential" | "parallel" | "mixed";
+    if (hasParallelAgents && hasSequentialAgents) {
+      executionFlow = "mixed";
+    } else if (hasParallelAgents) {
+      executionFlow = "parallel";
+    } else {
+      executionFlow = "sequential";
+    }
+
     const newWorkflow: PlaygroundWorkflow = {
       id: Date.now().toString(),
       name: workflowName,
       description: workflowDescription,
       agents: [...playgroundAgents],
       status: "draft",
-      createdAt: new Date()
+      createdAt: new Date(),
+      executionFlow
     };
 
     setSavedWorkflows([newWorkflow, ...savedWorkflows]);
