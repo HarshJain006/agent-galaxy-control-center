@@ -9,6 +9,7 @@ import { AgentDeployment } from "@/components/AgentDeployment";
 import { AgentPlayground } from "@/components/AgentPlayground";
 import { CompaniesManagement } from "@/components/CompaniesManagement";
 import { Settings } from "@/components/Settings";
+import { Chat } from "@/components/Chat";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -18,6 +19,8 @@ const Dashboard = () => {
     switch (activeTab) {
       case "dashboard":
         return <DashboardComponent />;
+      case "chat":
+        return <Chat />;
       case "playground":
         return <AgentPlayground />;
       case "users":
