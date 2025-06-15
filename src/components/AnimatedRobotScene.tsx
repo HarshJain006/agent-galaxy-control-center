@@ -1,3 +1,4 @@
+
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Float, Trail, useTexture } from '@react-three/drei';
 import { useRef, Suspense } from 'react';
@@ -5,7 +6,7 @@ import * as THREE from 'three';
 
 function Robot() {
   const robotRef = useRef<THREE.Group>(null);
-  const logoTexture = useTexture('/photo-1485827404703-89b55fcc595e.jpg');
+  const logoTexture = useTexture('/placeholder.svg');
   
   useFrame((state) => {
     if (robotRef.current) {
