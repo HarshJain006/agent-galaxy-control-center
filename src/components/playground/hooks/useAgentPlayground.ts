@@ -31,7 +31,10 @@ export function useAgentPlayground() {
       task: `Perform ${agent.name} task`,
       order: playgroundAgents.length + 1,
       status: "pending",
-      attachments: []
+      attachments: [],
+      executionType: "sequential",
+      dependsOn: [],
+      inputSources: []
     };
     setPlaygroundAgents([...playgroundAgents, newPlaygroundAgent]);
     
@@ -75,6 +78,12 @@ export function useAgentPlayground() {
     });
     
     setPlaygroundAgents(newAgents);
+  };
+
+  const updateAgent = (agentId: string, updates: Partial<PlaygroundAgent>) => {
+    setPlaygroundAgents(playgroundAgents.map(a => 
+      a.id === agentId ? { ...a, ...updates } : a
+    ));
   };
 
   const saveWorkflow = () => {
@@ -204,6 +213,7 @@ export function useAgentPlayground() {
     startEditingTask,
     saveTask,
     cancelEditingTask,
-    toast
+    toast,
+    updateAgent
   };
 }

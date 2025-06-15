@@ -26,6 +26,7 @@ interface CommonPlaygroundProps {
   loadWorkflow: (workflow: PlaygroundWorkflow) => void;
   setSavedWorkflows: (workflows: PlaygroundWorkflow[]) => void;
   updateAgentFiles: (agentId: string, files: File[]) => void;
+  updateAgent: (agentId: string, updates: Partial<PlaygroundAgent>) => void;
   setTempTask: (task: string) => void;
 }
 
@@ -50,6 +51,7 @@ export function CommonPlayground({
   loadWorkflow,
   setSavedWorkflows,
   updateAgentFiles,
+  updateAgent,
   setTempTask
 }: CommonPlaygroundProps) {
   return (
@@ -77,7 +79,7 @@ export function CommonPlayground({
               Workflow Builder
             </CardTitle>
             <CardDescription>
-              Drag, drop, and customize your agent workflow. Upload files for each agent task.
+              Configure agents to work sequentially or in parallel with data flow between them.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -97,6 +99,7 @@ export function CommonPlayground({
               onRunWorkflow={runPlaygroundWorkflow}
               onSaveWorkflow={saveWorkflow}
               onUpdateAgentFiles={updateAgentFiles}
+              onUpdateAgent={updateAgent}
               onSetTempTask={setTempTask}
             />
           </CardContent>

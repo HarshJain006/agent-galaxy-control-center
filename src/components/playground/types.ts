@@ -23,6 +23,10 @@ export interface PlaygroundAgent {
   order: number;
   status: "pending" | "running" | "completed" | "error";
   attachments?: File[];
+  executionType: "sequential" | "parallel";
+  dependsOn?: string[]; // IDs of agents this agent depends on
+  outputData?: any; // Data produced by this agent
+  inputSources?: string[]; // IDs of agents whose output this agent uses
 }
 
 export interface PlaygroundWorkflow {
@@ -32,4 +36,5 @@ export interface PlaygroundWorkflow {
   agents: PlaygroundAgent[];
   status: "draft" | "running" | "completed";
   createdAt: Date;
+  executionFlow: "sequential" | "parallel" | "mixed";
 }

@@ -1,11 +1,14 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Play, Save, Workflow, Edit, X } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Play, Save, Workflow, Edit, X, GitBranch } from "lucide-react";
 import { PlaygroundAgent } from "../types";
 import { getStatusColor } from "../utils/styles";
 import { FileUpload } from "./FileUpload";
+import { ExecutionFlowManager } from "./ExecutionFlowManager";
 
 interface WorkflowBuilderProps {
   playgroundAgents: PlaygroundAgent[];
@@ -23,6 +26,7 @@ interface WorkflowBuilderProps {
   onRunWorkflow: () => void;
   onSaveWorkflow: () => void;
   onUpdateAgentFiles: (agentId: string, files: File[]) => void;
+  onUpdateAgent: (agentId: string, updates: Partial<PlaygroundAgent>) => void;
   onSetTempTask: (task: string) => void;
 }
 
@@ -42,6 +46,7 @@ export function WorkflowBuilder({
   onRunWorkflow,
   onSaveWorkflow,
   onUpdateAgentFiles,
+  onUpdateAgent,
   onSetTempTask
 }: WorkflowBuilderProps) {
   return (
@@ -67,112 +72,135 @@ export function WorkflowBuilder({
         </div>
       </div>
 
-      <div className="space-y-3">
-        <Label>Agent Sequence ({playgroundAgents.length} agents)</Label>
-        {playgroundAgents.length === 0 ? (
-          <div className="text-center py-8 border-2 border-dashed border-slate-300 rounded-lg">
-            <Workflow className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-            <p className="text-slate-500">Add agents from the left to build your workflow</p>
-          </div>
-        ) : (
-          <div className="space-y-2 max-h-80 overflow-y-auto">
-            {playgroundAgents.map((playgroundAgent, index) => {
-              const Icon = playgroundAgent.agent.icon;
-              return (
-                <div key={playgroundAgent.id} className="p-3 border rounded-lg bg-slate-50 space-y-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="flex items-center space-x-2 min-w-0 flex-1">
-                      <span className="text-sm font-bold text-slate-500">#{playgroundAgent.order}</span>
-                      <Icon className="w-4 h-4 text-purple-600 flex-shrink-0" />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium truncate">{playgroundAgent.agent.name}</p>
-                        {editingTaskId === playgroundAgent.id ? (
-                          <div className="flex items-center space-x-2 mt-1">
-                            <Input
-                              value={tempTask}
-                              onChange={(e) => onSetTempTask(e.target.value)}
-                              className="text-xs h-6"
-                              placeholder="Enter task..."
-                            />
-                            <Button
-                              size="sm"
-                              onClick={() => onSaveTask(playgroundAgent.id)}
-                              className="h-6 px-2"
+      {playgroundAgents.length === 0 ? (
+        <div className="text-center py-8 border-2 border-dashed border-slate-300 rounded-lg">
+          <Workflow className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+          <p className="text-slate-500">Add agents from the left to build your workflow</p>
+        </div>
+      ) : (
+        <Tabs defaultValue="agents" className="w-full">
+          <TabsList>
+            <TabsTrigger value="agents">Agent Configuration</TabsTrigger>
+            <TabsTrigger value="flow">
+              <GitBranch className="w-4 h-4 mr-1" />
+              Execution Flow
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="agents" className="space-y-3">
+            <Label>Agent Sequence ({playgroundAgents.length} agents)</Label>
+            <div className="space-y-2 max-h-80 overflow-y-auto">
+              {playgroundAgents.map((playgroundAgent, index) => {
+                const Icon = playgroundAgent.agent.icon;
+                return (
+                  <div key={playgroundAgent.id} className="p-3 border rounded-lg bg-slate-50 space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-2 min-w-0 flex-1">
+                        <span className="text-sm font-bold text-slate-500">#{playgroundAgent.order}</span>
+                        <Icon className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium truncate">{playgroundAgent.agent.name}</p>
+                          {editingTaskId === playgroundAgent.id ? (
+                            <div className="flex items-center space-x-2 mt-1">
+                              <Input
+                                value={tempTask}
+                                onChange={(e) => onSetTempTask(e.target.value)}
+                                className="text-xs h-6"
+                                placeholder="Enter task..."
+                              />
+                              <Button
+                                size="sm"
+                                onClick={() => onSaveTask(playgroundAgent.id)}
+                                className="h-6 px-2"
+                              >
+                                <Save className="w-3 h-3" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={onCancelEditingTask}
+                                className="h-6 px-2"
+                              >
+                                <X className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          ) : (
+                            <p 
+                              className="text-xs text-slate-600 cursor-pointer hover:text-blue-600"
+                              onClick={() => onStartEditingTask(playgroundAgent.id, playgroundAgent.task)}
                             >
-                              <Save className="w-3 h-3" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={onCancelEditingTask}
-                              className="h-6 px-2"
-                            >
-                              <X className="w-3 h-3" />
-                            </Button>
-                          </div>
-                        ) : (
-                          <p 
-                            className="text-xs text-slate-600 cursor-pointer hover:text-blue-600"
-                            onClick={() => onStartEditingTask(playgroundAgent.id, playgroundAgent.task)}
-                          >
-                            {playgroundAgent.task}
-                          </p>
-                        )}
+                              {playgroundAgent.task}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Badge className={getStatusColor(playgroundAgent.status)}>
+                            {playgroundAgent.status}
+                          </Badge>
+                          {playgroundAgent.executionType === "parallel" && (
+                            <Badge variant="outline" className="text-xs">
+                              Parallel
+                            </Badge>
+                          )}
+                        </div>
                       </div>
-                      <Badge className={getStatusColor(playgroundAgent.status)}>
-                        {playgroundAgent.status}
-                      </Badge>
+                      <div className="flex items-center space-x-1">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => onMoveAgent(playgroundAgent.id, "up")}
+                          disabled={index === 0}
+                          className="h-6 w-6 p-0"
+                        >
+                          ↑
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => onMoveAgent(playgroundAgent.id, "down")}
+                          disabled={index === playgroundAgents.length - 1}
+                          className="h-6 w-6 p-0"
+                        >
+                          ↓
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => onStartEditingTask(playgroundAgent.id, playgroundAgent.task)}
+                          className="h-6 w-6 p-0"
+                        >
+                          <Edit className="w-3 h-3" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => onRemoveAgent(playgroundAgent.id)}
+                          className="h-6 w-6 p-0 text-red-600 hover:text-red-700"
+                        >
+                          <X className="w-3 h-3" />
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-1">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => onMoveAgent(playgroundAgent.id, "up")}
-                        disabled={index === 0}
-                        className="h-6 w-6 p-0"
-                      >
-                        ↑
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => onMoveAgent(playgroundAgent.id, "down")}
-                        disabled={index === playgroundAgents.length - 1}
-                        className="h-6 w-6 p-0"
-                      >
-                        ↓
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => onStartEditingTask(playgroundAgent.id, playgroundAgent.task)}
-                        className="h-6 w-6 p-0"
-                      >
-                        <Edit className="w-3 h-3" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => onRemoveAgent(playgroundAgent.id)}
-                        className="h-6 w-6 p-0 text-red-600 hover:text-red-700"
-                      >
-                        <X className="w-3 h-3" />
-                      </Button>
-                    </div>
+                    
+                    <FileUpload
+                      agentId={playgroundAgent.id}
+                      files={playgroundAgent.attachments || []}
+                      onFilesChange={onUpdateAgentFiles}
+                    />
                   </div>
-                  
-                  {/* File Upload Section */}
-                  <FileUpload
-                    agentId={playgroundAgent.id}
-                    files={playgroundAgent.attachments || []}
-                    onFilesChange={onUpdateAgentFiles}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+                );
+              })}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="flow">
+            <ExecutionFlowManager
+              agents={playgroundAgents}
+              onUpdateAgent={onUpdateAgent}
+            />
+          </TabsContent>
+        </Tabs>
+      )}
 
       <div className="flex space-x-2">
         <Button onClick={onRunWorkflow} className="flex-1">
