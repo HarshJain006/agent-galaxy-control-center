@@ -11,7 +11,7 @@ interface ChatMessageProps {
 export function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.sender === 'user';
   return (
-    <div className={cn('flex items-start gap-4', isUser && 'justify-end')}>
+    <div className={cn('flex items-start gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 ease-out', isUser && 'justify-end')}>
       {!isUser && (
         <Avatar className="h-8 w-8 border">
           <AvatarImage src={message.avatar} />
@@ -26,7 +26,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
             : 'bg-white'
         )}
       >
-        <p>{message.text}</p>
+        <p className="leading-relaxed">{message.text}</p>
       </div>
       {isUser && (
         <Avatar className="h-8 w-8 border">

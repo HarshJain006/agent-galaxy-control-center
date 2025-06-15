@@ -2,8 +2,7 @@
 import { useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Send } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Send, Paperclip } from 'lucide-react';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -22,11 +21,14 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
 
   return (
     <div className="border-t bg-white p-4">
-      <form onSubmit={handleSubmit} className="flex items-center gap-2">
+      <form onSubmit={handleSubmit} className="flex items-center gap-4">
+        <Button type="button" variant="ghost" size="icon" className="shrink-0" title="Attach file">
+          <Paperclip className="h-5 w-5" />
+        </Button>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your message here..."
+          placeholder="Type your message, or drop a file..."
           className="flex-1 resize-none border-0 shadow-none focus-visible:ring-0"
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -36,8 +38,8 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
           }}
           rows={1}
         />
-        <Button type="submit" size="icon" disabled={isLoading || !input.trim()}>
-          <Send className="h-4 w-4" />
+        <Button type="submit" size="icon" className="shrink-0" disabled={isLoading || !input.trim()}>
+          <Send className="h-5 w-5" />
         </Button>
       </form>
     </div>
