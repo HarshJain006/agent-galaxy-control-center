@@ -22,6 +22,7 @@ export interface PlaygroundAgent {
   task: string;
   order: number;
   status: "pending" | "running" | "completed" | "error";
+  attachments?: File[];
 }
 
 export interface PlaygroundWorkflow {

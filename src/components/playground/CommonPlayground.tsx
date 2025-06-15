@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Workflow } from "lucide-react";
 import { AgentList } from "./components/AgentList";
@@ -26,6 +25,8 @@ interface CommonPlaygroundProps {
   saveWorkflow: () => void;
   loadWorkflow: (workflow: PlaygroundWorkflow) => void;
   setSavedWorkflows: (workflows: PlaygroundWorkflow[]) => void;
+  updateAgentFiles: (agentId: string, files: File[]) => void;
+  setTempTask: (task: string) => void;
 }
 
 export function CommonPlayground({
@@ -47,7 +48,9 @@ export function CommonPlayground({
   runPlaygroundWorkflow,
   saveWorkflow,
   loadWorkflow,
-  setSavedWorkflows
+  setSavedWorkflows,
+  updateAgentFiles,
+  setTempTask
 }: CommonPlaygroundProps) {
   return (
     <>
@@ -74,7 +77,7 @@ export function CommonPlayground({
               Workflow Builder
             </CardTitle>
             <CardDescription>
-              Drag, drop, and customize your agent workflow
+              Drag, drop, and customize your agent workflow. Upload files for each agent task.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -93,6 +96,8 @@ export function CommonPlayground({
               onSetWorkflowDescription={setWorkflowDescription}
               onRunWorkflow={runPlaygroundWorkflow}
               onSaveWorkflow={saveWorkflow}
+              onUpdateAgentFiles={updateAgentFiles}
+              onSetTempTask={setTempTask}
             />
           </CardContent>
         </Card>

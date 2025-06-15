@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Agent, AgentChain, PlaygroundAgent, PlaygroundWorkflow } from "../types";
@@ -31,7 +30,8 @@ export function useAgentPlayground() {
       agent,
       task: `Perform ${agent.name} task`,
       order: playgroundAgents.length + 1,
-      status: "pending"
+      status: "pending",
+      attachments: []
     };
     setPlaygroundAgents([...playgroundAgents, newPlaygroundAgent]);
     
@@ -48,6 +48,12 @@ export function useAgentPlayground() {
   const updateAgentTask = (id: string, task: string) => {
     setPlaygroundAgents(playgroundAgents.map(a => 
       a.id === id ? { ...a, task } : a
+    ));
+  };
+
+  const updateAgentFiles = (agentId: string, files: File[]) => {
+    setPlaygroundAgents(playgroundAgents.map(a => 
+      a.id === agentId ? { ...a, attachments: files } : a
     ));
   };
 
@@ -190,6 +196,7 @@ export function useAgentPlayground() {
     addAgentToPlayground,
     removeAgentFromPlayground,
     updateAgentTask,
+    updateAgentFiles,
     moveAgent,
     saveWorkflow,
     runPlaygroundWorkflow,
