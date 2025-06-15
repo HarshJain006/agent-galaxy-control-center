@@ -1,11 +1,11 @@
-
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Float, Trail } from '@react-three/drei';
-import { useRef } from 'react';
+import { OrbitControls, Float, Trail, useTexture } from '@react-three/drei';
+import { useRef, Suspense } from 'react';
 import * as THREE from 'three';
 
 function Robot() {
   const robotRef = useRef<THREE.Group>(null);
+  const logoTexture = useTexture('/photo-1485827404703-89b55fcc595e.jpg');
   
   useFrame((state) => {
     if (robotRef.current) {
@@ -24,7 +24,7 @@ function Robot() {
       {/* Robot Head */}
       <mesh position={[0, 1, 0]}>
         <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color="#000000" metalness={0.9} roughness={0.1} />
+        <meshStandardMaterial map={logoTexture} metalness={0.9} roughness={0.1} />
       </mesh>
       
       {/* Robot Eyes */}
@@ -40,7 +40,7 @@ function Robot() {
       {/* Robot Body */}
       <mesh position={[0, 0, 0]}>
         <boxGeometry args={[1.2, 1.5, 0.8]} />
-        <meshStandardMaterial color="#1A1A1A" metalness={0.8} roughness={0.2} />
+        <meshStandardMaterial map={logoTexture} metalness={0.8} roughness={0.2} />
       </mesh>
       
       {/* Robot Arms */}
@@ -122,35 +122,36 @@ export function AnimatedRobotScene() {
   return (
     <div className="h-96 w-full">
       <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
-        <ambientLight intensity={0.3} />
-        <pointLight position={[10, 10, 10]} intensity={1.2} color="#FFD700" />
-        <pointLight position={[-10, -10, -10]} intensity={0.8} color="#FFD700" />
-        <pointLight position={[0, 15, 0]} intensity={0.6} color="#FFFFFF" />
-        
-        {/* Central Robot */}
-        <Robot />
-        
-        {/* Orbiting AI Agents - Inner Ring (Golden Yellow variants) */}
-        <OrbitingAgent radius={3} speed={1.2} offset={0} color="#FFD700" ringIndex={0} />
-        <OrbitingAgent radius={3} speed={1.2} offset={Math.PI * 2 / 3} color="#FFA500" ringIndex={0} />
-        <OrbitingAgent radius={3} speed={1.2} offset={Math.PI * 4 / 3} color="#FFDF00" ringIndex={0} />
-        
-        {/* Orbiting AI Agents - Middle Ring (Black variants) */}
-        <OrbitingAgent radius={4.5} speed={0.8} offset={Math.PI / 3} color="#333333" ringIndex={1} />
-        <OrbitingAgent radius={4.5} speed={0.8} offset={Math.PI} color="#1A1A1A" ringIndex={1} />
-        <OrbitingAgent radius={4.5} speed={0.8} offset={Math.PI * 5 / 3} color="#000000" ringIndex={1} />
-        
-        {/* Orbiting AI Agents - Outer Ring (Mixed golden and black) */}
-        <OrbitingAgent radius={6} speed={0.6} offset={0} color="#B8860B" ringIndex={2} />
-        <OrbitingAgent radius={6} speed={0.6} offset={Math.PI / 2} color="#2C2C2C" ringIndex={2} />
-        <OrbitingAgent radius={6} speed={0.6} offset={Math.PI} color="#DAA520" ringIndex={2} />
-        <OrbitingAgent radius={6} speed={0.6} offset={Math.PI * 3 / 2} color="#0F0F0F" ringIndex={2} />
-        
-        {/* Extra outer ring for more depth */}
-        <OrbitingAgent radius={7.5} speed={0.4} offset={Math.PI / 4} color="#FFD700" ringIndex={3} />
-        <OrbitingAgent radius={7.5} speed={0.4} offset={Math.PI * 3 / 4} color="#1C1C1C" ringIndex={3} />
-        <OrbitingAgent radius={7.5} speed={0.4} offset={Math.PI * 5 / 4} color="#F4A460" ringIndex={3} />
-        
+        <Suspense fallback={null}>
+          <ambientLight intensity={0.3} />
+          <pointLight position={[10, 10, 10]} intensity={1.2} color="#FFD700" />
+          <pointLight position={[-10, -10, -10]} intensity={0.8} color="#FFD700" />
+          <pointLight position={[0, 15, 0]} intensity={0.6} color="#FFFFFF" />
+          
+          {/* Central Robot */}
+          <Robot />
+          
+          {/* Orbiting AI Agents - Inner Ring (Golden Yellow variants) */}
+          <OrbitingAgent radius={3} speed={1.2} offset={0} color="#FFD700" ringIndex={0} />
+          <OrbitingAgent radius={3} speed={1.2} offset={Math.PI * 2 / 3} color="#FFA500" ringIndex={0} />
+          <OrbitingAgent radius={3} speed={1.2} offset={Math.PI * 4 / 3} color="#FFDF00" ringIndex={0} />
+          
+          {/* Orbiting AI Agents - Middle Ring (Black variants) */}
+          <OrbitingAgent radius={4.5} speed={0.8} offset={Math.PI / 3} color="#333333" ringIndex={1} />
+          <OrbitingAgent radius={4.5} speed={0.8} offset={Math.PI} color="#1A1A1A" ringIndex={1} />
+          <OrbitingAgent radius={4.5} speed={0.8} offset={Math.PI * 5 / 3} color="#000000" ringIndex={1} />
+          
+          {/* Orbiting AI Agents - Outer Ring (Mixed golden and black) */}
+          <OrbitingAgent radius={6} speed={0.6} offset={0} color="#B8860B" ringIndex={2} />
+          <OrbitingAgent radius={6} speed={0.6} offset={Math.PI / 2} color="#2C2C2C" ringIndex={2} />
+          <OrbitingAgent radius={6} speed={0.6} offset={Math.PI} color="#DAA520" ringIndex={2} />
+          <OrbitingAgent radius={6} speed={0.6} offset={Math.PI * 3 / 2} color="#0F0F0F" ringIndex={2} />
+          
+          {/* Extra outer ring for more depth */}
+          <OrbitingAgent radius={7.5} speed={0.4} offset={Math.PI / 4} color="#FFD700" ringIndex={3} />
+          <OrbitingAgent radius={7.5} speed={0.4} offset={Math.PI * 3 / 4} color="#1C1C1C" ringIndex={3} />
+          <OrbitingAgent radius={7.5} speed={0.4} offset={Math.PI * 5 / 4} color="#F4A460" ringIndex={3} />
+        </Suspense>
         <OrbitControls 
           enableZoom={false} 
           enablePan={false} 
