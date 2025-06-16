@@ -1,4 +1,3 @@
-
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Float, Trail, useTexture } from '@react-three/drei';
 import { useRef, Suspense } from 'react';
@@ -22,43 +21,181 @@ function Robot() {
 
   return (
     <group ref={robotRef}>
-      {/* Robot Head */}
-      <mesh position={[0, 1, 0]}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial map={logoTexture} metalness={0.9} roughness={0.1} />
+      {/* Robot Head - More rounded and detailed */}
+      <mesh position={[0, 1.2, 0]}>
+        <boxGeometry args={[1.2, 1, 1]} />
+        <meshStandardMaterial 
+          color="#E5E7EB" 
+          metalness={0.7} 
+          roughness={0.3}
+          map={logoTexture}
+        />
       </mesh>
       
-      {/* Robot Eyes */}
-      <mesh position={[-0.2, 1.1, 0.5]}>
-        <sphereGeometry args={[0.1, 16, 16]} />
-        <meshStandardMaterial color="#FFD700" emissive="#FFD700" emissiveIntensity={0.8} />
+      {/* Head Antenna */}
+      <mesh position={[0, 1.8, 0]}>
+        <cylinderGeometry args={[0.03, 0.03, 0.4, 8]} />
+        <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
       </mesh>
-      <mesh position={[0.2, 1.1, 0.5]}>
-        <sphereGeometry args={[0.1, 16, 16]} />
-        <meshStandardMaterial color="#FFD700" emissive="#FFD700" emissiveIntensity={0.8} />
+      <mesh position={[0, 2.1, 0]}>
+        <sphereGeometry args={[0.08, 16, 16]} />
+        <meshStandardMaterial 
+          color="#FF4444" 
+          emissive="#FF4444" 
+          emissiveIntensity={0.5} 
+        />
       </mesh>
       
-      {/* Robot Body */}
+      {/* Robot Eyes - Larger and more expressive */}
+      <mesh position={[-0.25, 1.3, 0.5]}>
+        <sphereGeometry args={[0.15, 16, 16]} />
+        <meshStandardMaterial 
+          color="#00CCFF" 
+          emissive="#00CCFF" 
+          emissiveIntensity={0.8}
+          metalness={0.1}
+          roughness={0.1}
+        />
+      </mesh>
+      <mesh position={[0.25, 1.3, 0.5]}>
+        <sphereGeometry args={[0.15, 16, 16]} />
+        <meshStandardMaterial 
+          color="#00CCFF" 
+          emissive="#00CCFF" 
+          emissiveIntensity={0.8}
+          metalness={0.1}
+          roughness={0.1}
+        />
+      </mesh>
+      
+      {/* Eye pupils */}
+      <mesh position={[-0.25, 1.3, 0.6]}>
+        <sphereGeometry args={[0.05, 8, 8]} />
+        <meshStandardMaterial color="#000000" />
+      </mesh>
+      <mesh position={[0.25, 1.3, 0.6]}>
+        <sphereGeometry args={[0.05, 8, 8]} />
+        <meshStandardMaterial color="#000000" />
+      </mesh>
+      
+      {/* Robot mouth/speaker */}
+      <mesh position={[0, 1.0, 0.5]}>
+        <boxGeometry args={[0.4, 0.1, 0.05]} />
+        <meshStandardMaterial color="#333333" metalness={0.8} roughness={0.2} />
+      </mesh>
+      
+      {/* Neck */}
+      <mesh position={[0, 0.7, 0]}>
+        <cylinderGeometry args={[0.2, 0.25, 0.3, 8]} />
+        <meshStandardMaterial color="#B0B0B0" metalness={0.8} roughness={0.2} />
+      </mesh>
+      
+      {/* Robot Body - More detailed */}
       <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[1.2, 1.5, 0.8]} />
-        <meshStandardMaterial map={logoTexture} metalness={0.8} roughness={0.2} />
+        <boxGeometry args={[1.4, 1.8, 0.9]} />
+        <meshStandardMaterial 
+          color="#D1D5DB" 
+          metalness={0.6} 
+          roughness={0.4}
+        />
       </mesh>
       
-      {/* Robot Arms */}
-      <mesh position={[-0.8, 0.2, 0]}>
-        <cylinderGeometry args={[0.15, 0.15, 1, 8]} />
-        <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
-      </mesh>
-      <mesh position={[0.8, 0.2, 0]}>
-        <cylinderGeometry args={[0.15, 0.15, 1, 8]} />
-        <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
+      {/* Chest Panel */}
+      <mesh position={[0, 0.3, 0.46]}>
+        <boxGeometry args={[0.8, 0.8, 0.05]} />
+        <meshStandardMaterial 
+          color="#374151" 
+          metalness={0.9} 
+          roughness={0.1}
+          map={logoTexture}
+        />
       </mesh>
       
-      {/* Robot Chest Detail */}
-      <mesh position={[0, 0.3, 0.41]}>
-        <boxGeometry args={[0.6, 0.6, 0.1]} />
-        <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
+      {/* Control Buttons */}
+      <mesh position={[-0.2, -0.3, 0.46]}>
+        <cylinderGeometry args={[0.08, 0.08, 0.05, 16]} />
+        <meshStandardMaterial 
+          color="#22C55E" 
+          emissive="#22C55E" 
+          emissiveIntensity={0.3}
+        />
       </mesh>
+      <mesh position={[0, -0.3, 0.46]}>
+        <cylinderGeometry args={[0.08, 0.08, 0.05, 16]} />
+        <meshStandardMaterial 
+          color="#EF4444" 
+          emissive="#EF4444" 
+          emissiveIntensity={0.3}
+        />
+      </mesh>
+      <mesh position={[0.2, -0.3, 0.46]}>
+        <cylinderGeometry args={[0.08, 0.08, 0.05, 16]} />
+        <meshStandardMaterial 
+          color="#3B82F6" 
+          emissive="#3B82F6" 
+          emissiveIntensity={0.3}
+        />
+      </mesh>
+      
+      {/* Robot Arms - More articulated */}
+      <group position={[-0.9, 0.4, 0]}>
+        <mesh position={[0, 0, 0]}>
+          <cylinderGeometry args={[0.18, 0.18, 1.2, 8]} />
+          <meshStandardMaterial color="#9CA3AF" metalness={0.8} roughness={0.2} />
+        </mesh>
+        {/* Shoulder joint */}
+        <mesh position={[0, 0.6, 0]}>
+          <sphereGeometry args={[0.22, 16, 16]} />
+          <meshStandardMaterial color="#6B7280" metalness={0.9} roughness={0.1} />
+        </mesh>
+        {/* Hand */}
+        <mesh position={[0, -0.8, 0]}>
+          <sphereGeometry args={[0.2, 16, 16]} />
+          <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
+        </mesh>
+      </group>
+      
+      <group position={[0.9, 0.4, 0]}>
+        <mesh position={[0, 0, 0]}>
+          <cylinderGeometry args={[0.18, 0.18, 1.2, 8]} />
+          <meshStandardMaterial color="#9CA3AF" metalness={0.8} roughness={0.2} />
+        </mesh>
+        {/* Shoulder joint */}
+        <mesh position={[0, 0.6, 0]}>
+          <sphereGeometry args={[0.22, 16, 16]} />
+          <meshStandardMaterial color="#6B7280" metalness={0.9} roughness={0.1} />
+        </mesh>
+        {/* Hand */}
+        <mesh position={[0, -0.8, 0]}>
+          <sphereGeometry args={[0.2, 16, 16]} />
+          <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
+        </mesh>
+      </group>
+      
+      {/* Robot Legs */}
+      <group position={[-0.35, -1.2, 0]}>
+        <mesh position={[0, 0, 0]}>
+          <cylinderGeometry args={[0.2, 0.18, 1, 8]} />
+          <meshStandardMaterial color="#9CA3AF" metalness={0.8} roughness={0.2} />
+        </mesh>
+        {/* Foot */}
+        <mesh position={[0, -0.7, 0.2]}>
+          <boxGeometry args={[0.3, 0.2, 0.6]} />
+          <meshStandardMaterial color="#374151" metalness={0.7} roughness={0.3} />
+        </mesh>
+      </group>
+      
+      <group position={[0.35, -1.2, 0]}>
+        <mesh position={[0, 0, 0]}>
+          <cylinderGeometry args={[0.2, 0.18, 1, 8]} />
+          <meshStandardMaterial color="#9CA3AF" metalness={0.8} roughness={0.2} />
+        </mesh>
+        {/* Foot */}
+        <mesh position={[0, -0.7, 0.2]}>
+          <boxGeometry args={[0.3, 0.2, 0.6]} />
+          <meshStandardMaterial color="#374151" metalness={0.7} roughness={0.3} />
+        </mesh>
+      </group>
     </group>
   );
 }
@@ -124,10 +261,18 @@ export function AnimatedRobotScene() {
     <div className="h-96 w-full">
       <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
         <Suspense fallback={null}>
-          <ambientLight intensity={0.3} />
-          <pointLight position={[10, 10, 10]} intensity={1.2} color="#FFD700" />
-          <pointLight position={[-10, -10, -10]} intensity={0.8} color="#FFD700" />
-          <pointLight position={[0, 15, 0]} intensity={0.6} color="#FFFFFF" />
+          <ambientLight intensity={0.4} />
+          <pointLight position={[10, 10, 10]} intensity={1.5} color="#FFD700" />
+          <pointLight position={[-10, -10, -10]} intensity={1.0} color="#00CCFF" />
+          <pointLight position={[0, 15, 0]} intensity={0.8} color="#FFFFFF" />
+          <spotLight 
+            position={[0, 10, 5]} 
+            angle={0.3} 
+            penumbra={0.5} 
+            intensity={1.2} 
+            color="#FFFFFF"
+            castShadow
+          />
           
           {/* Central Robot */}
           <Robot />
