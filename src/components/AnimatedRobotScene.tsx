@@ -20,10 +20,10 @@ function Robot() {
   });
 
   return (
-    <group ref={robotRef}>
+    <group ref={robotRef} scale={0.7}>
       {/* Robot Head - More rounded and detailed */}
       <mesh position={[0, 1.2, 0]}>
-        <boxGeometry args={[1.2, 1, 1]} />
+        <boxGeometry args={[1.0, 0.8, 0.8]} />
         <meshStandardMaterial 
           color="#E5E7EB" 
           metalness={0.7} 
@@ -33,12 +33,12 @@ function Robot() {
       </mesh>
       
       {/* Head Antenna */}
-      <mesh position={[0, 1.8, 0]}>
-        <cylinderGeometry args={[0.03, 0.03, 0.4, 8]} />
+      <mesh position={[0, 1.7, 0]}>
+        <cylinderGeometry args={[0.025, 0.025, 0.3, 8]} />
         <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
       </mesh>
-      <mesh position={[0, 2.1, 0]}>
-        <sphereGeometry args={[0.08, 16, 16]} />
+      <mesh position={[0, 1.9, 0]}>
+        <sphereGeometry args={[0.06, 16, 16]} />
         <meshStandardMaterial 
           color="#FF4444" 
           emissive="#FF4444" 
@@ -47,8 +47,8 @@ function Robot() {
       </mesh>
       
       {/* Robot Eyes - Larger and more expressive */}
-      <mesh position={[-0.25, 1.3, 0.5]}>
-        <sphereGeometry args={[0.15, 16, 16]} />
+      <mesh position={[-0.2, 1.25, 0.4]}>
+        <sphereGeometry args={[0.12, 16, 16]} />
         <meshStandardMaterial 
           color="#00CCFF" 
           emissive="#00CCFF" 
@@ -57,8 +57,8 @@ function Robot() {
           roughness={0.1}
         />
       </mesh>
-      <mesh position={[0.25, 1.3, 0.5]}>
-        <sphereGeometry args={[0.15, 16, 16]} />
+      <mesh position={[0.2, 1.25, 0.4]}>
+        <sphereGeometry args={[0.12, 16, 16]} />
         <meshStandardMaterial 
           color="#00CCFF" 
           emissive="#00CCFF" 
@@ -69,30 +69,30 @@ function Robot() {
       </mesh>
       
       {/* Eye pupils */}
-      <mesh position={[-0.25, 1.3, 0.6]}>
-        <sphereGeometry args={[0.05, 8, 8]} />
+      <mesh position={[-0.2, 1.25, 0.48]}>
+        <sphereGeometry args={[0.04, 8, 8]} />
         <meshStandardMaterial color="#000000" />
       </mesh>
-      <mesh position={[0.25, 1.3, 0.6]}>
-        <sphereGeometry args={[0.05, 8, 8]} />
+      <mesh position={[0.2, 1.25, 0.48]}>
+        <sphereGeometry args={[0.04, 8, 8]} />
         <meshStandardMaterial color="#000000" />
       </mesh>
       
       {/* Robot mouth/speaker */}
-      <mesh position={[0, 1.0, 0.5]}>
-        <boxGeometry args={[0.4, 0.1, 0.05]} />
+      <mesh position={[0, 1.0, 0.4]}>
+        <boxGeometry args={[0.3, 0.08, 0.04]} />
         <meshStandardMaterial color="#333333" metalness={0.8} roughness={0.2} />
       </mesh>
       
       {/* Neck */}
-      <mesh position={[0, 0.7, 0]}>
-        <cylinderGeometry args={[0.2, 0.25, 0.3, 8]} />
+      <mesh position={[0, 0.6, 0]}>
+        <cylinderGeometry args={[0.15, 0.2, 0.25, 8]} />
         <meshStandardMaterial color="#B0B0B0" metalness={0.8} roughness={0.2} />
       </mesh>
       
       {/* Robot Body - More detailed */}
       <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[1.4, 1.8, 0.9]} />
+        <boxGeometry args={[1.1, 1.4, 0.7]} />
         <meshStandardMaterial 
           color="#D1D5DB" 
           metalness={0.6} 
@@ -101,8 +101,8 @@ function Robot() {
       </mesh>
       
       {/* Chest Panel */}
-      <mesh position={[0, 0.3, 0.46]}>
-        <boxGeometry args={[0.8, 0.8, 0.05]} />
+      <mesh position={[0, 0.2, 0.36]}>
+        <boxGeometry args={[0.6, 0.6, 0.04]} />
         <meshStandardMaterial 
           color="#374151" 
           metalness={0.9} 
@@ -112,24 +112,24 @@ function Robot() {
       </mesh>
       
       {/* Control Buttons */}
-      <mesh position={[-0.2, -0.3, 0.46]}>
-        <cylinderGeometry args={[0.08, 0.08, 0.05, 16]} />
+      <mesh position={[-0.15, -0.25, 0.36]}>
+        <cylinderGeometry args={[0.06, 0.06, 0.04, 16]} />
         <meshStandardMaterial 
           color="#22C55E" 
           emissive="#22C55E" 
           emissiveIntensity={0.3}
         />
       </mesh>
-      <mesh position={[0, -0.3, 0.46]}>
-        <cylinderGeometry args={[0.08, 0.08, 0.05, 16]} />
+      <mesh position={[0, -0.25, 0.36]}>
+        <cylinderGeometry args={[0.06, 0.06, 0.04, 16]} />
         <meshStandardMaterial 
           color="#EF4444" 
           emissive="#EF4444" 
           emissiveIntensity={0.3}
         />
       </mesh>
-      <mesh position={[0.2, -0.3, 0.46]}>
-        <cylinderGeometry args={[0.08, 0.08, 0.05, 16]} />
+      <mesh position={[0.15, -0.25, 0.36]}>
+        <cylinderGeometry args={[0.06, 0.06, 0.04, 16]} />
         <meshStandardMaterial 
           color="#3B82F6" 
           emissive="#3B82F6" 
@@ -138,61 +138,61 @@ function Robot() {
       </mesh>
       
       {/* Robot Arms - More articulated */}
-      <group position={[-0.9, 0.4, 0]}>
+      <group position={[-0.7, 0.3, 0]}>
         <mesh position={[0, 0, 0]}>
-          <cylinderGeometry args={[0.18, 0.18, 1.2, 8]} />
+          <cylinderGeometry args={[0.14, 0.14, 1.0, 8]} />
           <meshStandardMaterial color="#9CA3AF" metalness={0.8} roughness={0.2} />
         </mesh>
         {/* Shoulder joint */}
-        <mesh position={[0, 0.6, 0]}>
-          <sphereGeometry args={[0.22, 16, 16]} />
+        <mesh position={[0, 0.5, 0]}>
+          <sphereGeometry args={[0.18, 16, 16]} />
           <meshStandardMaterial color="#6B7280" metalness={0.9} roughness={0.1} />
         </mesh>
         {/* Hand */}
-        <mesh position={[0, -0.8, 0]}>
-          <sphereGeometry args={[0.2, 16, 16]} />
+        <mesh position={[0, -0.65, 0]}>
+          <sphereGeometry args={[0.16, 16, 16]} />
           <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
         </mesh>
       </group>
       
-      <group position={[0.9, 0.4, 0]}>
+      <group position={[0.7, 0.3, 0]}>
         <mesh position={[0, 0, 0]}>
-          <cylinderGeometry args={[0.18, 0.18, 1.2, 8]} />
+          <cylinderGeometry args={[0.14, 0.14, 1.0, 8]} />
           <meshStandardMaterial color="#9CA3AF" metalness={0.8} roughness={0.2} />
         </mesh>
         {/* Shoulder joint */}
-        <mesh position={[0, 0.6, 0]}>
-          <sphereGeometry args={[0.22, 16, 16]} />
+        <mesh position={[0, 0.5, 0]}>
+          <sphereGeometry args={[0.18, 16, 16]} />
           <meshStandardMaterial color="#6B7280" metalness={0.9} roughness={0.1} />
         </mesh>
         {/* Hand */}
-        <mesh position={[0, -0.8, 0]}>
-          <sphereGeometry args={[0.2, 16, 16]} />
+        <mesh position={[0, -0.65, 0]}>
+          <sphereGeometry args={[0.16, 16, 16]} />
           <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
         </mesh>
       </group>
       
       {/* Robot Legs */}
-      <group position={[-0.35, -1.2, 0]}>
+      <group position={[-0.28, -1.0, 0]}>
         <mesh position={[0, 0, 0]}>
-          <cylinderGeometry args={[0.2, 0.18, 1, 8]} />
+          <cylinderGeometry args={[0.16, 0.14, 0.8, 8]} />
           <meshStandardMaterial color="#9CA3AF" metalness={0.8} roughness={0.2} />
         </mesh>
         {/* Foot */}
-        <mesh position={[0, -0.7, 0.2]}>
-          <boxGeometry args={[0.3, 0.2, 0.6]} />
+        <mesh position={[0, -0.55, 0.15]}>
+          <boxGeometry args={[0.24, 0.16, 0.48]} />
           <meshStandardMaterial color="#374151" metalness={0.7} roughness={0.3} />
         </mesh>
       </group>
       
-      <group position={[0.35, -1.2, 0]}>
+      <group position={[0.28, -1.0, 0]}>
         <mesh position={[0, 0, 0]}>
-          <cylinderGeometry args={[0.2, 0.18, 1, 8]} />
+          <cylinderGeometry args={[0.16, 0.14, 0.8, 8]} />
           <meshStandardMaterial color="#9CA3AF" metalness={0.8} roughness={0.2} />
         </mesh>
         {/* Foot */}
-        <mesh position={[0, -0.7, 0.2]}>
-          <boxGeometry args={[0.3, 0.2, 0.6]} />
+        <mesh position={[0, -0.55, 0.15]}>
+          <boxGeometry args={[0.24, 0.16, 0.48]} />
           <meshStandardMaterial color="#374151" metalness={0.7} roughness={0.3} />
         </mesh>
       </group>
