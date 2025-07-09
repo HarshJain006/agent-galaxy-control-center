@@ -99,3 +99,113 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Soothing Animation Keyframes */
+@keyframes gentle-pulse {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes wave-flow {
+  0%, 100% {
+    transform: translateX(0) scaleY(1);
+  }
+  25% {
+    transform: translateX(-15px) scaleY(1.1);
+  }
+  50% {
+    transform: translateX(10px) scaleY(0.9);
+  }
+  75% {
+    transform: translateX(-8px) scaleY(1.05);
+  }
+}
+
+@keyframes wave-flow-2 {
+  0%, 100% {
+    transform: translateX(0) scaleY(1) skewX(0deg);
+  }
+  33% {
+    transform: translateX(12px) scaleY(1.08) skewX(1deg);
+  }
+  66% {
+    transform: translateX(-8px) scaleY(0.92) skewX(-1deg);
+  }
+}
+
+@keyframes gentle-breathe {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.7;
+  }
+}
+
+@keyframes sparkle-float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) scale(1);
+    opacity: 0.7;
+  }
+  25% {
+    transform: translateY(-30px) translateX(20px) scale(1.2);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-60px) translateX(-10px) scale(0.8);
+    opacity: 0.5;
+  }
+  75% {
+    transform: translateY(-30px) translateX(-25px) scale(1.1);
+    opacity: 0.9;
+  }
+}
+
+@keyframes sparkle-float-2 {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) scale(1) rotate(0deg);
+    opacity: 0.6;
+  }
+  33% {
+    transform: translateY(-40px) translateX(-15px) scale(1.3) rotate(120deg);
+    opacity: 1;
+  }
+  66% {
+    transform: translateY(-20px) translateX(25px) scale(0.9) rotate(240deg);
+    opacity: 0.4;
+  }
+}
+
+@keyframes sparkle-float-3 {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) scale(1);
+    opacity: 0.8;
+  }
+  40% {
+    transform: translateY(-50px) translateX(30px) scale(1.4);
+    opacity: 0.3;
+  }
+  80% {
+    transform: translateY(-25px) translateX(-20px) scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes sparkle-float-4 {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) scale(1) rotate(0deg);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-35px) translateX(15px) scale(1.5) rotate(180deg);
+    opacity: 1;
+  }
+}
