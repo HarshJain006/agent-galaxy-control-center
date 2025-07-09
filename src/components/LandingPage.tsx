@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bot, Users, Building2, Zap, Shield, Globe, ArrowRight, Star, CheckCircle } from "lucide-react";
-import { SoothingScene } from "./SoothingScene";
+import { AnimatedRobotScene } from "./AnimatedRobotScene";
 import { useNavigate } from "react-router-dom";
 
 export function LandingPage() {
@@ -127,9 +127,9 @@ export function LandingPage() {
             </div>
           </div>
           
-          {/* Soothing Animation */}
+          {/* 3D Robot Animation */}
           <div className="mb-12">
-            <SoothingScene />
+            <AnimatedRobotScene />
           </div>
           
           <div className="animate-fade-in">
