@@ -6,8 +6,9 @@ import { Dashboard as DashboardComponent } from "@/components/Dashboard";
 import { UsersManagement } from "@/components/UsersManagement";
 import { AgentsManagement } from "@/components/AgentsManagement";
 import { AgentDeployment } from "@/components/AgentDeployment";
-import { AgentPlayground } from "@/components/AgentPlayground";
-import { CompaniesManagement } from "@/components/CompaniesManagement";
+import { MyAgents } from "@/components/MyAgents";
+import { OwnerPanel } from "@/components/OwnerPanel";
+import { AgentUpload } from "@/components/AgentUpload";
 import { Settings } from "@/components/Settings";
 import { Chat } from "@/components/Chat";
 
@@ -21,16 +22,14 @@ const Dashboard = () => {
         return <DashboardComponent />;
       case "chat":
         return <Chat />;
-      case "playground":
-        return <AgentPlayground />;
-      case "users":
-        return <UsersManagement />;
       case "agents":
         return <AgentsManagement />;
-      case "deployment":
-        return <AgentDeployment />;
-      case "companies":
-        return <CompaniesManagement />;
+      case "my-agents":
+        return <MyAgents />;
+      case "upload":
+        return <AgentUpload />;
+      case "owner-panel":
+        return <OwnerPanel />;
       case "settings":
         return <Settings />;
       default:

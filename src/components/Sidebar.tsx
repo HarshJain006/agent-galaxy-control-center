@@ -22,7 +22,10 @@ interface SidebarProps {
 }
 
 export function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed }: SidebarProps) {
-  const menuItems = [
+  // Mock user data - TODO: Replace with real auth
+  const isOwner = true; // TODO: Get from backend auth
+  
+  const regularMenuItems = [
     {
       id: "dashboard",
       label: "Dashboard",
@@ -31,47 +34,47 @@ export function Sidebar({ activeTab, setActiveTab, collapsed, setCollapsed }: Si
     },
     {
       id: "chat",
-      label: "My GPT Chat",
+      label: "AI Guide Chat",
       icon: MessageSquare,
-      description: "Chat with your custom GPT"
-    },
-    {
-      id: "playground",
-      label: "Agent Playground",
-      icon: Sparkles,
-      description: "Mix, chain & create AI agents"
-    },
-    {
-      id: "users",
-      label: "Users",
-      icon: Users,
-      description: "Manage user accounts"
+      description: "Get help choosing agents"
     },
     {
       id: "agents",
-      label: "AI Agents",
+      label: "Use AI Agents",
       icon: Bot,
-      description: "Deploy and monitor agents"
+      description: "Browse and run agents"
     },
     {
-      id: "deployment",
-      label: "Agent Deployment",
+      id: "my-agents",
+      label: "My Agents",
+      icon: Sparkles,
+      description: "Previously used agents"
+    },
+    {
+      id: "upload",
+      label: "Upload Agent",
       icon: Rocket,
-      description: "Deploy n8n workflows"
-    },
-    {
-      id: "companies",
-      label: "Companies",
-      icon: Building2,
-      description: "Manage organizations"
+      description: "Upload your AI agent"
     },
     {
       id: "settings",
       label: "Settings",
       icon: Settings,
-      description: "System configuration"
+      description: "Account settings"
     }
   ];
+
+  const ownerMenuItems = [
+    {
+      id: "owner-panel",
+      label: "Owner Panel",
+      icon: Building2,
+      description: "Admin controls"
+    },
+    ...regularMenuItems
+  ];
+
+  const menuItems = isOwner ? ownerMenuItems : regularMenuItems;
 
   return (
     <div className={cn(
