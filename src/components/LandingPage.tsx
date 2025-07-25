@@ -158,8 +158,17 @@ export function LandingPage() {
               </a>
               <a href="#agents" className="text-slate-600 hover:text-blue-600 transition-colors">Agents</a>
               <a href="#upload" className="text-slate-600 hover:text-blue-600 transition-colors">Upload Your Agent</a>
-              <Button variant="outline" className="hover:scale-105 transition-transform">Login</Button>
-              <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white hover:scale-105 transition-all duration-300">
+              <Button 
+                variant="outline" 
+                className="hover:scale-105 transition-transform"
+                onClick={() => navigate('/signin')}
+              >
+                Login
+              </Button>
+              <Button 
+                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white hover:scale-105 transition-all duration-300"
+                onClick={() => navigate('/signup')}
+              >
                 Sign Up
               </Button>
             </div>
